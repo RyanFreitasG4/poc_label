@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:poc_label/pages/home_page.dart';
 import 'package:poc_label/pages/login_page.dart';
 
 void main() {
@@ -13,6 +12,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'App Coletor de Dados',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
