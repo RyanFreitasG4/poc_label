@@ -107,41 +107,59 @@ class _HomePageState extends State<HomePage> with CustomDialogMixin {
     final PosPrintResult res =
         await printer.connect(ipPrinter, port: int.parse(portPrinter));
 
-    if (res == PosPrintResult.success) {
-      await printDemoReceipt(printer);
-      printer.disconnect();
+    // final PosPrintResult res =
+    //     await printer.connect('192.168.100.1', port: 9100);
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Impressão efetuada com sucesso'),
-          backgroundColor: Colors.green,
-        ),
+    if (res == PosPrintResult.success) {
+      showCustomDialog(
+        context: context,
+        title: 'Sucesso!!',
+        content: 'Conexão com a impressora efetuada com sucesso!',
+        actions: [
+          TextButton(
+            onPressed: () => () => Navigator.of(context).pop(),
+            child: const Text('Fechar'),
+          )
+        ],
       );
+      printDemoReceipt(printer);
+      printer.disconnect();
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(res.msg),
-          backgroundColor: Colors.red,
-        ),
-      );
+      print(res);
     }
   }
 
   Future<void> printDemoReceipt(NetworkPrinter printer) async {
-    printer.text(
-      'G4 Tech. Its Works !!',
-      styles: const PosStyles(align: PosAlign.center),
-      linesAfter: 1,
-    );
+    // Print image
+    // final ByteData data = await rootBundle.load('assets/logo.jpg');
+    // final Uint8List bytes = data.buffer.asUint8List();
+    // final Image image = decodeImage(bytes)!;
+    // printer.imageRaster(image);
 
-    final now = DateTime.now();
-    final formatter = DateFormat('MM/dd/yyyy HH:mm:ss');
-    final String timestamp = formatter.format(now);
-    printer.text(
-      timestamp,
-      styles: PosStyles(align: PosAlign.center),
-      linesAfter: 2,
-    );
+    // final List<int> barData = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 4];
+    // printer.barcode(Barcode.upcA(barData));
+
+    printer.text('------------------------------',
+        styles: PosStyles(align: PosAlign.center), linesAfter: 1);
+    printer.text('=== G4TECH ===', styles: PosStyles(align: PosAlign.center));
+    printer.text('ENDEREÇO::', styles: PosStyles(align: PosAlign.center));
+    printer.text('Rua dos Andradas, 220',
+        styles: PosStyles(align: PosAlign.center));
+    printer.text('Centro, Cornélio Procópio - PR',
+        styles: PosStyles(align: PosAlign.center));
+    printer.text('ENTRE EM CONTATO:',
+        styles: PosStyles(align: PosAlign.center));
+    printer.text('Tel: (43) 99956-2946',
+        styles: PosStyles(align: PosAlign.center));
+    printer.text('Email: contato@g4tech.com.br',
+        styles: PosStyles(align: PosAlign.center));
+    printer.text('Web: https://www.g4tech.com.br/',
+        styles: PosStyles(align: PosAlign.center), linesAfter: 1);
+    printer.text('--------------------------------',
+        styles: PosStyles(align: PosAlign.center));
+
+    printer.feed(2);
+    printer.cut();
   }
 
   @override
