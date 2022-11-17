@@ -122,7 +122,8 @@ class _HomePageState extends State<HomePage>
           )
         ],
       );
-      await printDemoReceipt(printer);
+      // await printDemoReceipt(printer);
+      await printWithLibSewoo(ipPrinter, int.parse(portPrinter));
       printer.disconnect();
     } else {
       print(res);
