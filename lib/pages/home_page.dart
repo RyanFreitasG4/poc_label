@@ -123,7 +123,8 @@ class _HomePageState extends State<HomePage>
         ],
       );
       await printDemoReceipt(printer);
-      printer.disconnect();
+      // printer.disconnect();
+      Future.delayed(Duration(minutes: 1), () => printer.disconnect());
     } else {
       print(res);
     }

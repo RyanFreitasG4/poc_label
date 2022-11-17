@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:esc_pos_printer/esc_pos_printer.dart';
 import 'package:image/image.dart';
 import 'dart:typed_data';
@@ -9,16 +11,25 @@ mixin PrintReceipt {
     printer.text('------------------------------',
         styles: PosStyles(align: PosAlign.center), linesAfter: 1);
 
-    final ByteData data = await rootBundle.load('assets/image.png');
-    final Uint8List imgBytes = data.buffer.asUint8List();
-    final Image image = decodeImage(imgBytes)!;
-    printer.image(image);
+    final ByteData data = await rootBundle.load('assets/rabbit_black.jpg');
+    final Uint8List imgBytes = data.buffer.asUint8List(
+      data.offsetInBytes,
+      data.lengthInBytes,
+    );
+
+    if (imgBytes.isNotEmpty) {
+      final Image image = decodeJpg(imgBytes)!;
+      printer.image(image);
+    } else {
+      print('Imagem vazia');
+    }
 
     printer.text('------------------------------',
         styles: PosStyles(align: PosAlign.center), linesAfter: 1);
 
-    final List<int> barData = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 4];
-    printer.barcode(Barcode.upcA(barData));
+    final List<int> barData = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 4, 2, 3];
+    // printer.barcode(Barcode.upcA(barData));
+    printer.barcode(Barcode.ean13(barData));
 
     printer.text('------------------------------',
         styles: PosStyles(align: PosAlign.center), linesAfter: 1);
