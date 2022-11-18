@@ -1,10 +1,12 @@
 import 'dart:io';
 
-import 'package:esc_pos_printer/esc_pos_printer.dart';
+import 'package:barcode/barcode.dart';
+import 'package:barcode_image/barcode_image.dart';
+import 'package:esc_pos_printer/esc_pos_printer.dart' hide Barcode;
 import 'package:image/image.dart';
 import 'dart:typed_data';
 import 'package:flutter/services.dart';
-import 'package:esc_pos_utils/esc_pos_utils.dart';
+import 'package:esc_pos_utils/esc_pos_utils.dart' hide Barcode;
 
 mixin PrintReceipt {
   Future<void> printDemoReceipt(NetworkPrinter printer) async {
@@ -17,19 +19,19 @@ mixin PrintReceipt {
       data.lengthInBytes,
     );
 
-    if (imgBytes.isNotEmpty) {
-      final Image image = decodeJpg(imgBytes)!;
-      printer.image(image);
-    } else {
-      print('Imagem vazia');
-    }
-
-    printer.text('------------------------------',
-        styles: PosStyles(align: PosAlign.center), linesAfter: 1);
+    // printer.text('------------------------------',
+    //     styles: PosStyles(align: PosAlign.center), linesAfter: 1);
 
     final List<int> barData = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 4, 2, 3];
+    // final List<dynamic> barData128 = "{ABC-abc-1234".split("");
     // printer.barcode(Barcode.upcA(barData));
-    printer.barcode(Barcode.ean13(barData));
+    // printer.barcode(Barcode.code128(barData128));
+
+    final Image image = Image(200, 100);
+    fill(image, getColor(255, 255, 255));
+    drawBarcode(image, Barcode.code128(), 'ABC-abc-1234', font: arial_24);
+
+    printer.image(image);
 
     printer.text('------------------------------',
         styles: PosStyles(align: PosAlign.center), linesAfter: 1);
